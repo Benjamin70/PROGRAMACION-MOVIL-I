@@ -1,53 +1,62 @@
 // ============================
-// 🟢 Ejercicio 4.10 – Clases abstractas, interfaces y delegación
+// 🟢 Ejercicio 4.10 – Versión con renombramientos para evitar errores de redeclaración
 // ============================
 
 /*
-📌 Explicación:
-Este ejercicio aplica conceptos clave de programación orientada a objetos:
-- Clases abstractas (`Spice`)
-- Interfaces (`Grinder`, `SpiceColor`)
-- Delegación de interfaz (como en el ejemplo de `Plecostomus`)
-- Subclases como `Curry`, que heredan e implementan comportamiento específico
+📌 NOTA GENERAL:
+Se renombraron todas las clases, interfaces y objetos para evitar conflictos con ejercicios anteriores:
+- class Curry → CurrySpice
+- abstract class Spice → SpiceBase
+- interface Grinder → GrinderBase
+- interface SpiceColor → SpiceColorBase
+- object YellowSpiceColor → YellowSpiceColorBase
 
-El curry hereda de `Spice`, implementa `Grinder`, y delega `SpiceColor` a una instancia singleton `YellowSpiceColor`.
+Esto permite compilar y ejecutar este archivo sin errores aunque existan clases del mismo nombre en Ejercicio-4.5.kt o 4.8.kt.
 */
 
 fun main() {
-    val curry = Curry("Curry Rojo", "hot")
-    println("La especia ${curry.name} tiene color: ${curry.color}")
+    val curry = CurrySpice("Curry Amarillo", "hot")
+    println("Nombre: ${curry.name}")
+    println("Picante: ${curry.spiciness}")
+    println("Color: ${curry.color}")
     curry.prepareSpice()
 }
 
-interface Grinder {
-    fun grind()
-}
-
-interface SpiceColor {
+// Interfaz SpiceColor renombrada para evitar conflicto
+interface SpiceColorBase {
     val color: String
 }
 
-object YellowSpiceColor : SpiceColor {
-    override val color = "amarillo"
+// Singleton YellowSpiceColor renombrado para evitar conflicto
+object YellowSpiceColorBase : SpiceColorBase {
+    override val color: String = "amarillo"
 }
 
-abstract class Spice(
+// Interfaz Grinder renombrada para evitar conflicto
+interface GrinderBase {
+    fun grind()
+}
+
+// Clase abstracta Spice renombrada a SpiceBase para evitar conflicto
+abstract class SpiceBase(
     val name: String,
     val spiciness: String,
-    color: SpiceColor
-) : SpiceColor by color {
+    color: SpiceColorBase
+) : SpiceColorBase by color {
     abstract fun prepareSpice()
 }
 
-class Curry(name: String, spiciness: String) :
-    Spice(name, spiciness, YellowSpiceColor), Grinder {
+// Subclase Curry renombrada a CurrySpice para evitar conflicto
+class CurrySpice(
+    name: String,
+    spiciness: String
+) : SpiceBase(name, spiciness, YellowSpiceColorBase), GrinderBase {
 
     override fun prepareSpice() {
         grind()
     }
 
     override fun grind() {
-        println("Moliendo la especia \"$name\" con picor \"$spiciness\".")
+        println("Moliendo la especia \"$name\" con nivel \"$spiciness\".")
     }
 }
-
